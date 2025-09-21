@@ -1,0 +1,28 @@
+name: ads509
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11 # stable and supported by most libraries
+  - beautifulsoup4
+  - emoji
+  - ipykernel
+  - jupyterlab
+  - lxml # faster parser for BeautifulSoup
+  - pandas
+  - matplotlib
+  - nltk
+  - notebook
+  - numpy
+  - requests
+  - regex # better regex engine than stdlib re
+  - scikit-learn
+  - seaborn
+  - spacy
+  - tabulate
+  - tqdm # for progress bars
+  - wordcloud
+  - pip
+  - pip:
+      - openai # if you need to experiment with LLM APIs
+      - transformers # HuggingFace models
