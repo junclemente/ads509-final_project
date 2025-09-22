@@ -1,10 +1,10 @@
-# ADS509 - Final Team Project
+# 🎓 ADS509 - Final Team Project Title
 
 ### ADS509 - Applied Large Language Models for Data Science
 
 ### Team 1
 
-# Installation
+# 💻 Installation
 
 To get started with this project, please clone the repository and navigate
 to it:
@@ -14,7 +14,7 @@ to it:
 > cd ads509-final_project
 ```
 
-## Environment Setup
+## 🌱 Environment Setup
 
 This project uses a conda environment specified in a YAML file for
 reproducibility and consistent development. Ensure you have
@@ -42,22 +42,38 @@ conda env update -f environment/ads509.yaml --prune
 The `--prune` option cleans the environment by removing packages that are
 no longer required.
 
-# Contributors
+# 👩‍💻👨‍💻 Contributors
 
 - [Amayrani Balbuena](https://github.com/amayranib)
 - [Jun Clemente](https://github.com/junclemente)
 - [Tanya Ortega](https://github.com/tanyaort)
 
-# Methods
+# 🔀 Development Workflow
 
-# Technologies
+- **main** → stable, production-ready branch (protected).
+- **develop** → active development branch where new features are merged.
+- **feature/\*** → short-lived branches for specific tasks.
 
-# Abstract
+### How to Contribute
 
-# Objective
+1. Create a feature branch from `develop`.
+2. Commit your changes with clear messages.
+3. Open a Pull Request into `develop`.
+4. Once reviewed, your changes will be merged into `develop`.
+5. At milestones, `develop` is merged into `main`.
 
-# Data Sources
+👉 See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
 
-# References
+# ⚙️ Methods
 
-# Presentations and Projects
+# 🛠️ Technologies
+
+# 📝 Abstract
+
+# 🎯 Objective
+
+# 🗂️ Data Sources
+
+# 📖 References
+
+# 📽️ Presentations and Projects
