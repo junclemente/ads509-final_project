@@ -26,3 +26,4 @@ dependencies:
   - pip:
       - openai # if you need to experiment with LLM APIs
       - transformers # HuggingFace models
+      - praw
