@@ -1,4 +1,4 @@
-# 🎓 ADS509 - Final Team Project Title
+# 🎓 Sentiment & Theme Analysis of High- vs. Low-Performing Schools Using Online Reviews and Discussions
 
 ### ADS509 - Applied Large Language Models for Data Science
 
@@ -71,6 +71,15 @@ no longer required.
 # 📝 Abstract
 
 # 🎯 Objective
+
+This project looks at how people talk about schools in high-performing vs.
+low-performing districts. We're pulling reviews and discussions from Yelp,
+Reddit, and Twitter to see both the overall sentiment (positive or negative)
+and the main themes that come up in these conversations.
+
+Our goals are to:
+_ Run sentiment analysis to check if high-performing schools are talked about more positively compared to low-performing ones.
+_ Use topic modeling to pull out key themes in each group (like academics, safety, teacher quality, resources). \* Compare the sentiment and themes between high- and low-performing schools to get a clearer picture of how school quality is being perceived online.
 
 # 🗂️ Data Sources
 
