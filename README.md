@@ -74,6 +74,14 @@ no longer required.
 
 # 🗂️ Data Sources
 
+## ⚠️ Disclaimer
+
+This project uses aggregated Reddit data obtained via the [Reddit API](https://www.redditinc.com/policies/data-api-terms).
+
+- No raw Reddit posts or user comments are displayed, stored, or redistributed.
+- Only aggregated outputs such as keywords, topics, and sentiment scores are shown.
+- All analysis is for **academic, non-commercial research** purposes.
+
 # 📖 References
 
 # 📽️ Presentations and Projects
