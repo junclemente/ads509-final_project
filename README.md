@@ -95,4 +95,6 @@ This project uses aggregated Reddit data obtained via the [Reddit API](https://w
 
 # 📖 References
 
+- [Project Repository](https://github.com/junclemente/ads509-final_project)
+
 # 📽️ Presentations and Projects

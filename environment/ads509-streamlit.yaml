@@ -1,4 +1,4 @@
-name: ads509
+name: ads509-streamlit
 channels:
   - conda-forge
   - defaults
@@ -19,11 +19,7 @@ dependencies:
   - scikit-learn
   - seaborn
   - spacy
-  - tabulate
   - tqdm # for progress bars
-  - wordcloud
   - pip
   - pip:
-      - openai # if you need to experiment with LLM APIs
-      - transformers # HuggingFace models
       - praw
