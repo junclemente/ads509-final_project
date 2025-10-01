@@ -11,7 +11,7 @@ def load_demo_data():
                    "Boulevard Academy", "Memorial HS"],
         "city": ["Palo Alto, CA", "Palo Alto, CA", "Palo Alto, CA",
                  "Oklahoma City, OK", "Oklahoma City, OK"],
-        "source": ["Niche", "Yelp", "Website", "Niche", "Yelp"],
+        "source": ["Yelp", "Twitter", "Reddit", "Yelp", "Twitter"],
         "review_text": [
             "The teachers are amazing and offer lots of support.",
             "Great academics but a bit competitive.",
@@ -31,7 +31,7 @@ df = load_demo_data()
 st.sidebar.title("📚 ADS-509 School Reviews App")
 page = st.sidebar.radio(
     "Navigate",
-    ["🏠 Home", "📝 Classifier", "🔍 Topics", "📊 Data Explorer", "ℹ️ About"]
+    ["🏠 Home", "📝 Classifier", "🔍 Topics", "📊 Data Explorer", "🔎 Query Builder", "ℹ️ About"]
 )
 
 # -----------------------------
@@ -49,6 +49,7 @@ if page == "🏠 Home":
     - Sentiment Classification
     - Topic Modeling
     - Descriptive Statistics
+    - Query Builder for Reddit/Twitter/Yelp data
     """)
 
 # -----------------------------
@@ -99,13 +100,56 @@ elif page == "📊 Data Explorer":
     st.dataframe(df[["school", "city", "source", "rating", "review_text"]])
 
 # -----------------------------
+# Query Builder Page (NEW)
+# -----------------------------
+elif page == "🔎 Query Builder":
+    st.title("Query Builder")
+
+    st.sidebar.header("Search Parameters")
+    district_name = st.sidebar.text_input("District Name", "Palo Alto")
+
+    terms = {
+        "schools": st.sidebar.checkbox("schools", value=True),
+        "district": st.sidebar.checkbox("district", value=True),
+        "education": st.sidebar.checkbox("education", value=True),
+        "homework": st.sidebar.checkbox("homework", value=True),
+        "teachers": st.sidebar.checkbox("teachers", value=True),
+        "students": st.sidebar.checkbox("students", value=True)
+    }
+
+    selected_terms = [term for term, checked in terms.items() if checked]
+
+    if selected_terms:
+        terms_str = " OR ".join(selected_terms)
+        query = f'{district_name} ({terms_str})'
+    else:
+        query = district_name
+
+    MIN_WORD = st.sidebar.number_input("Minimum Words", min_value=5, value=10)
+    MIN_SCORE = st.sidebar.number_input("Minimum Score", min_value=1, value=5)
+    LIMIT = st.sidebar.number_input("Number of Posts (Limit)", min_value=50, max_value=500, value=150)
+
+    st.write("### Query Preview")
+    st.code(query, language="text")
+    st.write(f"Min Words: {MIN_WORD}, Min Score: {MIN_SCORE}, Limit: {LIMIT}")
+
+    if st.button("Run Query"):
+        st.success("Query executed successfully! (demo mode)")
+        demo_results = pd.DataFrame({
+            "post": ["Great teachers at Palo Alto", "Too much homework", "School lacks resources"],
+            "score": [25, 12, 8],
+            "words": [50, 20, 15]
+        })
+        st.write(demo_results.head(10))
+
+# -----------------------------
 # About Page
 # -----------------------------
 elif page == "ℹ️ About":
     st.title("About This Project")
     st.write("""
     **ADS-509 Final Project**  
-    - Dataset: School Reviews (Niche, Yelp, School Websites, Articles)  
+    - Dataset: School Reviews (Yelp, Reddit, Twitter)  
     - Focus: Comparing high-performing Palo Alto schools with low-performing Oklahoma City schools  
     - Methods: Sentiment Classification + Topic Modeling  
     - App: Built with Streamlit  
@@ -115,6 +159,7 @@ elif page == "ℹ️ About":
     - Jun Clemente  
     - Amayrani Balbuena
     """)
+
 
 
 
