@@ -27,7 +27,7 @@ installed.
 Run the following:
 
 ```{bash}
-conda env create -f environment/ads509.yaml
+conda env create -f environment/ads509-streamlit.yaml
 ```
 
 #### Update the Environment (if needed)
