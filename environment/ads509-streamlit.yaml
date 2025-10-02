@@ -19,6 +19,7 @@ dependencies:
   - scikit-learn
   - seaborn
   - spacy
+  - streamlit
   - tqdm # for progress bars
   - pip
   - pip:
