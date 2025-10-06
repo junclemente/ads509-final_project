@@ -49,7 +49,7 @@ if page == "🏠 Home":
     - Sentiment Classification
     - Topic Modeling
     - Descriptive Statistics
-    - Query Builder for Reddit/Twitter/Yelp data
+    - Query Builder for Reddit data
     """)
 
 # -----------------------------
@@ -133,12 +133,11 @@ elif page == "🔎 Query Builder":
     st.code(query, language="text")
     st.write(f"Min Words: {MIN_WORD}, Min Score: {MIN_SCORE}, Limit: {LIMIT}")
 
-    # ✅ Correct import path to reddit_utils.py (one level above /app)
+    # ✅ Correct import path to reddit_utils.py (same folder)
     if st.button("Run Query"):
-        import importlib.util
-        import os
+        import importlib.util, os
 
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        project_root = os.path.abspath(os.path.dirname(__file__))
         reddit_utils_path = os.path.join(project_root, "reddit_utils.py")
 
         if not os.path.exists(reddit_utils_path):
@@ -158,14 +157,12 @@ elif page == "🔎 Query Builder":
                 except Exception as e:
                     st.error(f"⚠️ Error fetching Reddit posts: {e}")
 
-
 # -----------------------------------
 # 🏫 District Comparison (Reddit Posts + Sentiment + Visualization)
 # -----------------------------------
 elif page == "🏫 District Comparison":
     import sys, os, importlib.util
     import pandas as pd
-    import streamlit as st
     import matplotlib.pyplot as plt
     from wordcloud import WordCloud
     import seaborn as sns
@@ -184,8 +181,8 @@ elif page == "🏫 District Comparison":
 
     st.code(f"District 1: {query1}\nDistrict 2: {query2}", language="text")
 
-    # Load reddit_utils dynamically
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    # ✅ Load reddit_utils dynamically (same folder as this script)
+    project_root = os.path.abspath(os.path.dirname(__file__))
     reddit_utils_path = os.path.join(project_root, "reddit_utils.py")
 
     if not os.path.exists(reddit_utils_path):
@@ -247,7 +244,7 @@ elif page == "🏫 District Comparison":
                             text1 = " ".join(df1["title"])
                             if text1.strip():
                                 wc1 = WordCloud(width=500, height=300, background_color="black", colormap="cool").generate(text1)
-                                st.image(wc1.to_array(), use_column_width=True)
+                                st.image(wc1.to_array(), use_container_width=True)
                             else:
                                 st.write("No text available.")
 
@@ -256,7 +253,7 @@ elif page == "🏫 District Comparison":
                             text2 = " ".join(df2["title"])
                             if text2.strip():
                                 wc2 = WordCloud(width=500, height=300, background_color="black", colormap="plasma").generate(text2)
-                                st.image(wc2.to_array(), use_column_width=True)
+                                st.image(wc2.to_array(), use_container_width=True)
                             else:
                                 st.write("No text available.")
 
@@ -291,9 +288,6 @@ elif page == "🏫 District Comparison":
                 except Exception as e:
                     st.error(f"⚠️ Error fetching Reddit posts: {e}")
 
-
-
-
 # -----------------------------
 # About Page
 # -----------------------------
@@ -301,7 +295,7 @@ elif page == "ℹ️ About":
     st.title("About This Project")
     st.write("""
     **ADS-509 Final Project**  
-    - Dataset: School Reviews (Yelp, Reddit, Twitter)  
+    - Dataset: School Reviews (Reddit)  
     - Focus: Comparing high-performing Palo Alto schools with low-performing Oklahoma City schools  
     - Methods: Sentiment Classification + Topic Modeling  
     - App: Built with Streamlit  
@@ -311,6 +305,7 @@ elif page == "ℹ️ About":
     - Jun Clemente  
     - Amayrani Balbuena
     """)
+
 
 
 
