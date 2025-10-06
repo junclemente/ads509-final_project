@@ -31,7 +31,7 @@ df = load_demo_data()
 st.sidebar.title("📚 ADS-509 School Reviews App")
 page = st.sidebar.radio(
     "Navigate",
-    ["🏠 Home", "📝 Classifier", "🔍 Topics", "📊 Data Explorer", "🔎 Query Builder", "ℹ️ About"]
+    ["🏠 Home", "📝 Classifier", "🔍 Topics", "📊 Data Explorer", "🔎 Query Builder", "🏫 District Comparison", "ℹ️ About"]
 )
 
 # -----------------------------
@@ -100,7 +100,7 @@ elif page == "📊 Data Explorer":
     st.dataframe(df[["school", "city", "source", "rating", "review_text"]])
 
 # -----------------------------
-# Query Builder Page (NEW)
+# Query Builder Page (with Reddit API)
 # -----------------------------
 elif page == "🔎 Query Builder":
     st.title("Query Builder")
@@ -133,14 +133,166 @@ elif page == "🔎 Query Builder":
     st.code(query, language="text")
     st.write(f"Min Words: {MIN_WORD}, Min Score: {MIN_SCORE}, Limit: {LIMIT}")
 
+    # ✅ Correct import path to reddit_utils.py (one level above /app)
     if st.button("Run Query"):
-        st.success("Query executed successfully! (demo mode)")
-        demo_results = pd.DataFrame({
-            "post": ["Great teachers at Palo Alto", "Too much homework", "School lacks resources"],
-            "score": [25, 12, 8],
-            "words": [50, 20, 15]
-        })
-        st.write(demo_results.head(10))
+        import importlib.util
+        import os
+
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        reddit_utils_path = os.path.join(project_root, "reddit_utils.py")
+
+        if not os.path.exists(reddit_utils_path):
+            st.error(f"❌ reddit_utils.py not found at: {reddit_utils_path}")
+        else:
+            spec = importlib.util.spec_from_file_location("reddit_utils", reddit_utils_path)
+            reddit_utils = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(reddit_utils)
+
+            with st.spinner("Fetching Reddit posts..."):
+                try:
+                    df_results = reddit_utils.fetch_reddit_posts(district_name, selected_terms, limit=LIMIT)
+                    st.success(f"✅ Found {len(df_results)} Reddit posts for '{district_name}'")
+
+                    st.subheader("Sample Results")
+                    st.dataframe(df_results.head(10))
+                except Exception as e:
+                    st.error(f"⚠️ Error fetching Reddit posts: {e}")
+
+
+# -----------------------------------
+# 🏫 District Comparison (Reddit Posts + Sentiment + Visualization)
+# -----------------------------------
+elif page == "🏫 District Comparison":
+    import sys, os, importlib.util
+    import pandas as pd
+    import streamlit as st
+    import matplotlib.pyplot as plt
+    from wordcloud import WordCloud
+    import seaborn as sns
+
+    st.title("🏫 District Comparison (Reddit Posts)")
+    st.subheader("Query Preview")
+
+    # Input fields for two districts
+    district1 = st.text_input("District 1", "Palo Alto")
+    district2 = st.text_input("District 2", "Oklahoma City")
+
+    # Default search terms
+    selected_terms = ["schools", "district", "education", "homework", "teachers", "students"]
+    query1 = f'{district1} ({ " OR ".join(selected_terms) })'
+    query2 = f'{district2} ({ " OR ".join(selected_terms) })'
+
+    st.code(f"District 1: {query1}\nDistrict 2: {query2}", language="text")
+
+    # Load reddit_utils dynamically
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    reddit_utils_path = os.path.join(project_root, "reddit_utils.py")
+
+    if not os.path.exists(reddit_utils_path):
+        st.error(f"❌ reddit_utils.py not found at: {reddit_utils_path}")
+    else:
+        spec = importlib.util.spec_from_file_location("reddit_utils", reddit_utils_path)
+        reddit_utils = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(reddit_utils)
+
+        if st.button("Run Comparison"):
+            with st.spinner("Fetching Reddit posts and analyzing sentiment..."):
+                try:
+                    # Fetch posts for each district
+                    df1 = reddit_utils.fetch_reddit_posts(district1, selected_terms, limit=50)
+                    df2 = reddit_utils.fetch_reddit_posts(district2, selected_terms, limit=50)
+
+                    if df1.empty or df2.empty:
+                        st.warning("⚠️ One or both districts returned no Reddit results.")
+                    else:
+                        # Add district labels
+                        df1["district"] = district1
+                        df2["district"] = district2
+                        combined_df = pd.concat([df1, df2], ignore_index=True)
+
+                        # Display metrics
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.metric(label=f"{district1} - Avg Sentiment", value=round(df1['sentiment_score'].mean(), 2))
+                        with col2:
+                            st.metric(label=f"{district2} - Avg Sentiment", value=round(df2['sentiment_score'].mean(), 2))
+
+                        # 🎨 Color-coded sentiment labels
+                        def color_sentiment(val):
+                            if val == "Positive":
+                                color = "lightgreen"
+                            elif val == "Negative":
+                                color = "salmon"
+                            else:
+                                color = "lightgray"
+                            return f"background-color: {color}"
+
+                        st.subheader(f"📘 {district1} Reddit Posts")
+                        st.dataframe(df1[["title", "score", "sentiment_label"]].style.applymap(color_sentiment, subset=["sentiment_label"]))
+
+                        st.subheader(f"📗 {district2} Reddit Posts")
+                        st.dataframe(df2[["title", "score", "sentiment_label"]].style.applymap(color_sentiment, subset=["sentiment_label"]))
+
+                        # 📊 Sentiment Distribution Chart
+                        st.subheader("📊 Sentiment Distribution by District")
+                        sentiment_counts = combined_df.groupby(["district", "sentiment_label"]).size().unstack(fill_value=0)
+                        st.bar_chart(sentiment_counts)
+
+                        # ☁️ Word Clouds
+                        st.subheader("☁️ Word Clouds by District")
+                        col_wc1, col_wc2 = st.columns(2)
+
+                        with col_wc1:
+                            st.markdown(f"### {district1}")
+                            text1 = " ".join(df1["title"])
+                            if text1.strip():
+                                wc1 = WordCloud(width=500, height=300, background_color="black", colormap="cool").generate(text1)
+                                st.image(wc1.to_array(), use_column_width=True)
+                            else:
+                                st.write("No text available.")
+
+                        with col_wc2:
+                            st.markdown(f"### {district2}")
+                            text2 = " ".join(df2["title"])
+                            if text2.strip():
+                                wc2 = WordCloud(width=500, height=300, background_color="black", colormap="plasma").generate(text2)
+                                st.image(wc2.to_array(), use_column_width=True)
+                            else:
+                                st.write("No text available.")
+
+                        # 📋 Summary Table
+                        st.subheader("📋 Sentiment Summary Table")
+                        summary_data = []
+                        for df, name in [(df1, district1), (df2, district2)]:
+                            summary_data.append({
+                                "District": name,
+                                "# Posts": len(df),
+                                "Avg Sentiment": round(df["sentiment_score"].mean(), 2),
+                                "% Positive": round((df["sentiment_label"] == "Positive").mean() * 100, 1),
+                                "% Negative": round((df["sentiment_label"] == "Negative").mean() * 100, 1),
+                            })
+                        summary_df = pd.DataFrame(summary_data)
+                        st.table(summary_df)
+
+                        # 💬 Insights
+                        st.subheader("💬 Key Insights")
+                        avg1 = df1["sentiment_score"].mean()
+                        avg2 = df2["sentiment_score"].mean()
+
+                        if avg1 > avg2:
+                            st.markdown(f"✨ **{district1}** discussions appear slightly more positive overall compared to **{district2}**.")
+                        elif avg2 > avg1:
+                            st.markdown(f"✨ **{district2}** discussions appear slightly more positive overall compared to **{district1}**.")
+                        else:
+                            st.markdown("😐 Both districts show a similar overall sentiment tone.")
+
+                        st.markdown("_These insights reflect the tone of recent Reddit discussions related to school topics._")
+
+                except Exception as e:
+                    st.error(f"⚠️ Error fetching Reddit posts: {e}")
+
+
+
 
 # -----------------------------
 # About Page
@@ -159,7 +311,6 @@ elif page == "ℹ️ About":
     - Jun Clemente  
     - Amayrani Balbuena
     """)
-
 
 
 
