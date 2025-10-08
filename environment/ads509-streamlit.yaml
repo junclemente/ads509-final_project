@@ -24,3 +24,4 @@ dependencies:
   - pip
   - pip:
       - praw
+      - import-ipynb
