@@ -79,14 +79,70 @@ We use GitHub branch protection to keep our workflow safe and consistent:
    git push -u origin feature/<short-name>
    ```
 
-5. Open a Pull Request (PR) into `develop`.
+5. Keep your feature branch up to date with `develop`:
 
-   - At least one teammate should review.
-   - Use **Squash and Merge** unless otherwise agreed.
+   Before opening a PR or after new changes land in `develop`, sync your branch.
 
-6. When we reach a stable milestone:
-   - Open a PR from `develop` → `main`.
-   - Tag the commit (e.g., `v0.1.0`) for that release.
+   \*\*Recommended (merge):
+
+   ```bash
+   # Make sure develop is current
+   git checkout develop
+   git pull origin develop
+
+   # Switch back to your feature branch
+   git checkout feature/<short-name>
+
+   # Bring in latest changes
+   git merge origin/develop
+
+   # Resolve conflicts → test locally → then push
+   git add .
+   git commit   # if merge commit is created
+   git push origin feature/<short-name>
+   ```
+
+   \*\*Alternative (rebase, cleaner history):
+
+   ```bash
+   git checkout develop
+   git pull origin develop
+
+
+   git checkout feature/<short-name>
+   git rebase origin/develop
+
+   # If conflicts: fix → git add <file> → git rebase --continue
+
+   # When done, force-push since history changed:
+
+   git push --force-with-lease origin feature/<short-name>
+   ```
+
+   **When to Sync:**
+
+   - Before starting a new work session.
+   - Before opening a PR.
+   - After review changes are merged into `develop`.
+     \*\* Safety Tips
+   - Prefer **merge** if multiple people share a branch.
+   - If rebasing, always use `--force-with-leas` (never `--force`).
+   - Optionally set tracking:
+
+   ```bash
+   git branch --set-upstream-to=origin/feature/<short-name>
+
+   ```
+
+6. Open a Pull Request (PR) into `develop`.
+
+- If necessary, at least one teammate should review.
+- Use **Squash and Merge** unless otherwise agreed.
+
+7. When we reach a stable milestone:
+
+- Open a PR from `develop` → `main`.
+- Tag the commit (e.g., `v0.1.0`) for that release.
 
 ---
 
