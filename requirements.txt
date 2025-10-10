@@ -1,0 +1,7 @@
+streamlit
+praw
+pandas
+matplotlib
+wordcloud
+textblob
+seaborn
