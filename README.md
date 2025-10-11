@@ -71,7 +71,7 @@ no longer required.
 # 📝 Abstract
 
 # 🎯 Objective
-
+gs
 This project looks at how people talk about schools in high-performing vs.
 low-performing districts. We're pulling reviews and discussions from Yelp,
 Reddit, and Twitter to see both the overall sentiment (positive or negative)
