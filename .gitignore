@@ -209,3 +209,6 @@ __marimo__/
 
 # Reddit API
 *.ini
+
+praw.ini
+
