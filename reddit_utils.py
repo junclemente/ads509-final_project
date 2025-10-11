@@ -10,14 +10,16 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 # Download VADER lexicon (only once)
 nltk.download("vader_lexicon", quiet=True)
 
+
 # --------------------------------------------
 # ✅ Reddit API Connection
 # --------------------------------------------
-# def connect_reddit():
+# def connect_local_reddit():
 #     """Connect to Reddit using praw.ini credentials."""
 #     import configparser
-#     import praw
 #     import os
+
+#     import praw
 
 #     # Locate praw.ini one level up
 #     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -34,7 +36,7 @@ nltk.download("vader_lexicon", quiet=True)
 #     reddit = praw.Reddit(
 #         client_id=creds["client_id"],
 #         client_secret=creds["client_secret"],
-#         user_agent=creds["user_agent"]
+#         user_agent=creds["user_agent"],
 #     )
 
 #     return reddit
@@ -80,6 +82,7 @@ def connect_reddit() -> praw.Reddit:
 
     # ---- 2) Local praw.ini (INI format)
     # Search a few sensible spots: CWD, file's dir, and parent of file's dir
+    # connect_local_reddit()
     candidate_dirs = [
         Path.cwd(),
         Path(__file__).resolve().parent,
@@ -177,4 +180,5 @@ def fetch_reddit_posts(district_name, terms, limit=50):
     if not df.empty:
         df["sentiment_score"] = df["sentiment_score"].astype(float)
 
+    return df
     return df
