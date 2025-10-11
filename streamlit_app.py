@@ -1,5 +1,6 @@
-import streamlit as st
 import pandas as pd
+import streamlit as st
+
 
 # -----------------------------
 # Load Data (placeholder until scraping is complete)
@@ -135,7 +136,8 @@ elif page == "🔎 Query Builder":
 
     # ✅ Correct import path to reddit_utils.py (same folder)
     if st.button("Run Query"):
-        import importlib.util, os
+        import importlib.util
+        import os
 
         project_root = os.path.abspath(os.path.dirname(__file__))
         reddit_utils_path = os.path.join(project_root, "reddit_utils.py")
@@ -161,11 +163,14 @@ elif page == "🔎 Query Builder":
 # 🏫 District Comparison (Reddit Posts + Sentiment + Visualization)
 # -----------------------------------
 elif page == "🏫 District Comparison":
-    import sys, os, importlib.util
-    import pandas as pd
+    import importlib.util
+    import os
+    import sys
+
     import matplotlib.pyplot as plt
-    from wordcloud import WordCloud
+    import pandas as pd
     import seaborn as sns
+    from wordcloud import WordCloud
 
     st.title("🏫 District Comparison (Reddit Posts)")
     st.subheader("Query Preview")
@@ -304,6 +309,11 @@ elif page == "ℹ️ About":
     - Tanya Ortega  
     - Jun Clemente  
     - Amayrani Balbuena
+    """)
+
+
+
+
     """)
 
 
