@@ -9,6 +9,8 @@ Author: ADS 509 Team"""
 import re
 import string
 from collections import Counter
+from datetime import datetime
+from pathlib import Path
 
 import nltk
 import numpy as np
@@ -208,32 +210,3 @@ def get_post_statistics(df, comments_col="cleaned_comments"):
     )
 
     return df
-
-
-# =============================================================================
-# UTILITIES
-# =============================================================================
-
-
-def save_pickle_file(dataframe, filename, dataset_folder):
-    # Handle datset_folder
-    if not dataset_folder:
-        dataset_folder = Path.cwd()
-    else:
-        dataset_folder = Path(dataset_folder)
-
-    # remove spaces in filename
-    filename = filename.replace(" ", "_")
-
-    # ensure folder exists
-    dataset_folder.mkdir(parents=True, exist_ok=True)
-
-    # create timestamp
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    # full path
-    full_path = dataset_folder / f"{filename}_{timestamp}_reddit.pkl"
-
-    dataframe.to_pickle(full_path)
-    print(f"Saved as {filename}. ")
-
-    return full_path
