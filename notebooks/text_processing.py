@@ -9,6 +9,8 @@ Author: ADS 509 Team"""
 import re
 import string
 from collections import Counter
+from datetime import datetime
+from pathlib import Path
 
 import nltk
 import numpy as np
@@ -216,6 +218,12 @@ def get_post_statistics(df, comments_col="cleaned_comments"):
 
 
 def save_pickle_file(dataframe, filename, dataset_folder):
+    # check if running master pipeline
+    try:
+        IS_PIPELINE_RUN
+    except NameError:
+        IS_PIPELINE_RUN = False
+
     # Handle datset_folder
     if not dataset_folder:
         dataset_folder = Path.cwd()
@@ -228,10 +236,13 @@ def save_pickle_file(dataframe, filename, dataset_folder):
     # ensure folder exists
     dataset_folder.mkdir(parents=True, exist_ok=True)
 
-    # create timestamp
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    # full path
-    full_path = dataset_folder / f"{filename}_{timestamp}_reddit.pkl"
+    if IS_PIPELINE_RUN:
+        full_path = dataset_folder / f"{filename}_pipeline_reddit.pkl"
+    else:
+        # create timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        # full path
+        full_path = dataset_folder / f"{filename}_{timestamp}_reddit.pkl"
 
     dataframe.to_pickle(full_path)
     print(f"Saved as {filename}. ")
