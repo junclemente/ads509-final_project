@@ -4,6 +4,11 @@
 
 ### Team 1
 
+## 🚀 Live Demo
+
+A working demonstration of this project can be found at **[TJAlytix.streamlit.app](https://tjalytix.streamlit.app)** _(tee-jah-lyticks)_.
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-informational)](https://tjalytix.streamlit.app)
+
 # 💻 Installation
 
 To get started with this project, please clone the repository and navigate
@@ -26,7 +31,7 @@ installed.
 
 Run the following:
 
-```{bash}
+```bash
 conda env create -f environment/ads509-streamlit.yaml
 ```
 
@@ -35,8 +40,8 @@ conda env create -f environment/ads509-streamlit.yaml
 If there are any updates to the environment, you can update the environment
 with the following:
 
-```{bash}
-conda env update -f environment/ads509.yaml --prune
+```bash
+conda env update -f environment/ads509-streamlit.yaml --prune
 ```
 
 The `--prune` option cleans the environment by removing packages that are
@@ -66,15 +71,29 @@ no longer required.
 
 # ⚙️ Methods
 
+- Exploratory Data Analysis
+- Text Cleaning
+- Topic Modeling
+- Sentiment Analysis
+
 # 🛠️ Technologies
 
-# 📝 Abstract
+- Python 3.11+
+- Pandas
+- NLTK
+- Numpy
+- Jupyter Notebook
+- Matplotlib / Seaborn
+- Scikit-learn
+- Streamlit
+- ChatGPT
+- VSCode
 
 # 🎯 Objective
 
 This project looks at how people talk about schools in high-performing vs.
-low-performing districts. We're pulling reviews and discussions from Yelp,
-Reddit, and Twitter to see both the overall sentiment (positive or negative)
+low-performing districts. We're pulling reviews and discussions from
+Reddit to see both the overall sentiment (positive or negative)
 and the main themes that come up in these conversations.
 
 Our goals are to:
@@ -84,6 +103,8 @@ Our goals are to:
 - Compare the sentiment and themes between high- and low-performing schools to get a clearer picture of how school quality is being perceived online.
 
 # 🗂️ Data Sources
+
+The Reddit API was used to gather the text data sources for processing.
 
 ## ⚠️ Disclaimer
 
@@ -98,3 +119,17 @@ This project uses aggregated Reddit data obtained via the [Reddit API](https://w
 - [Project Repository](https://github.com/junclemente/ads509-final_project)
 
 # 📽️ Presentations and Projects
+
+- Web Application: [TJAlytics.streamlit.app](https://tjalytix.streamlit.app)
+- Project Presentation: Canva.com (TBD)
+- Project Repository: [https://github.com/junclemente/ads509-final_project](https://github.com/junclemente/ads509-final_project)
+
+## 🤖 AI Assistance Disclosure
+
+Parts of this project were developed with help from ChatGPT (OpenAI):
+
+- Debugging Python functions and pipeline logic
+- Drafting/rewriting docstrings and short notebook summaries
+- Creating small code snippets
+
+All generated code and text were reviewed and edited by the authors.
