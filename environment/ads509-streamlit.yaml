@@ -21,8 +21,6 @@ dependencies:
   - spacy
   - streamlit
   - tqdm # for progress bars
-  - wordcloud
   - pip
   - pip:
       - praw
-      - import-ipynb
