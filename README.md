@@ -2,7 +2,7 @@
 
 ### ADS509 - Applied Large Language Models for Data Science
 
-### Team 1
+### ADS-509 Group 3
 
 ## 🚀 Live Demo
 
