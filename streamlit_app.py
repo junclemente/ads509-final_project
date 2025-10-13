@@ -8,21 +8,32 @@ import streamlit as st
 @st.cache_data
 def load_demo_data():
     data = {
-        "school": ["Henry M. Gunn HS", "Palo Alto HS", "Hope Tech (Private)",
-                   "Boulevard Academy", "Memorial HS"],
-        "city": ["Palo Alto, CA", "Palo Alto, CA", "Palo Alto, CA",
-                 "Oklahoma City, OK", "Oklahoma City, OK"],
+        "school": [
+            "Henry M. Gunn HS",
+            "Palo Alto HS",
+            "Hope Tech (Private)",
+            "Boulevard Academy",
+            "Memorial HS",
+        ],
+        "city": [
+            "Palo Alto, CA",
+            "Palo Alto, CA",
+            "Palo Alto, CA",
+            "Oklahoma City, OK",
+            "Oklahoma City, OK",
+        ],
         "source": ["Yelp", "Twitter", "Reddit", "Yelp", "Twitter"],
         "review_text": [
             "The teachers are amazing and offer lots of support.",
             "Great academics but a bit competitive.",
             "Strong extracurriculars and technology programs.",
             "The school lacks resources and feels unsafe.",
-            "Administration doesn’t listen to parents."
+            "Administration doesn’t listen to parents.",
         ],
-        "rating": [5, 4, 5, 2, 1]
+        "rating": [5, 4, 5, 2, 1],
     }
     return pd.DataFrame(data)
+
 
 df = load_demo_data()
 
@@ -32,7 +43,15 @@ df = load_demo_data()
 st.sidebar.title("📚 ADS-509 School Reviews App")
 page = st.sidebar.radio(
     "Navigate",
-    ["🏠 Home", "📝 Classifier", "🔍 Topics", "📊 Data Explorer", "🔎 Query Builder", "🏫 District Comparison", "ℹ️ About"]
+    [
+        "🏠 Home",
+        "📝 Classifier",
+        "🔍 Topics",
+        "📊 Data Explorer",
+        "🔎 Query Builder",
+        "🏫 District Comparison",
+        "ℹ️ About",
+    ],
 )
 
 # -----------------------------
@@ -41,7 +60,8 @@ page = st.sidebar.radio(
 if page == "🏠 Home":
     st.title("School Reviews Analysis")
     st.subheader("Comparing High vs Low Performing Districts")
-    st.write("""
+    st.write(
+        """
     This app explores how parent and student reviews differ between
     **high-performing schools in Palo Alto, CA** and
     **low-performing schools in Oklahoma City, OK**.
@@ -51,7 +71,8 @@ if page == "🏠 Home":
     - Topic Modeling
     - Descriptive Statistics
     - Query Builder for Reddit data
-    """)
+    """
+    )
 
 # -----------------------------
 # Classifier Page
@@ -79,7 +100,7 @@ elif page == "🔍 Topics":
     demo_topics = {
         1: ["teachers", "academics", "support"],
         2: ["safety", "resources", "facilities"],
-        3: ["extracurriculars", "sports", "clubs"]
+        3: ["extracurriculars", "sports", "clubs"],
     }
     for tid, words in demo_topics.items():
         st.write(f"**Topic {tid}:** {', '.join(words)}")
@@ -89,12 +110,18 @@ elif page == "🔍 Topics":
 # -----------------------------
 elif page == "📊 Data Explorer":
     st.title("Descriptive Statistics")
-    st.write("Overview of the dataset: number of reviews, average rating, sentiment distribution.")
+    st.write(
+        "Overview of the dataset: number of reviews, average rating, sentiment distribution."
+    )
 
     # Summary metrics
     st.metric("Total Reviews", len(df))
-    st.metric("Avg Rating (Palo Alto)", df[df["city"]=="Palo Alto, CA"]["rating"].mean())
-    st.metric("Avg Rating (OKC)", df[df["city"]=="Oklahoma City, OK"]["rating"].mean())
+    st.metric(
+        "Avg Rating (Palo Alto)", df[df["city"] == "Palo Alto, CA"]["rating"].mean()
+    )
+    st.metric(
+        "Avg Rating (OKC)", df[df["city"] == "Oklahoma City, OK"]["rating"].mean()
+    )
 
     # Show reviews
     st.subheader("Sample Reviews")
@@ -115,20 +142,22 @@ elif page == "🔎 Query Builder":
         "education": st.sidebar.checkbox("education", value=True),
         "homework": st.sidebar.checkbox("homework", value=True),
         "teachers": st.sidebar.checkbox("teachers", value=True),
-        "students": st.sidebar.checkbox("students", value=True)
+        "students": st.sidebar.checkbox("students", value=True),
     }
 
     selected_terms = [term for term, checked in terms.items() if checked]
 
     if selected_terms:
         terms_str = " OR ".join(selected_terms)
-        query = f'{district_name} ({terms_str})'
+        query = f"{district_name} ({terms_str})"
     else:
         query = district_name
 
     MIN_WORD = st.sidebar.number_input("Minimum Words", min_value=5, value=10)
     MIN_SCORE = st.sidebar.number_input("Minimum Score", min_value=1, value=5)
-    LIMIT = st.sidebar.number_input("Number of Posts (Limit)", min_value=50, max_value=500, value=150)
+    LIMIT = st.sidebar.number_input(
+        "Number of Posts (Limit)", min_value=50, max_value=500, value=150
+    )
 
     st.write("### Query Preview")
     st.code(query, language="text")
@@ -145,14 +174,20 @@ elif page == "🔎 Query Builder":
         if not os.path.exists(reddit_utils_path):
             st.error(f"❌ reddit_utils.py not found at: {reddit_utils_path}")
         else:
-            spec = importlib.util.spec_from_file_location("reddit_utils", reddit_utils_path)
+            spec = importlib.util.spec_from_file_location(
+                "reddit_utils", reddit_utils_path
+            )
             reddit_utils = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(reddit_utils)
 
             with st.spinner("Fetching Reddit posts..."):
                 try:
-                    df_results = reddit_utils.fetch_reddit_posts(district_name, selected_terms, limit=LIMIT)
-                    st.success(f"✅ Found {len(df_results)} Reddit posts for '{district_name}'")
+                    df_results = reddit_utils.fetch_reddit_posts(
+                        district_name, selected_terms, limit=LIMIT
+                    )
+                    st.success(
+                        f"✅ Found {len(df_results)} Reddit posts for '{district_name}'"
+                    )
 
                     st.subheader("Sample Results")
                     st.dataframe(df_results.head(10))
@@ -180,7 +215,14 @@ elif page == "🏫 District Comparison":
     district2 = st.text_input("District 2", "Oklahoma City")
 
     # Default search terms
-    selected_terms = ["schools", "district", "education", "homework", "teachers", "students"]
+    selected_terms = [
+        "schools",
+        "district",
+        "education",
+        "homework",
+        "teachers",
+        "students",
+    ]
     query1 = f'{district1} ({ " OR ".join(selected_terms) })'
     query2 = f'{district2} ({ " OR ".join(selected_terms) })'
 
@@ -201,11 +243,17 @@ elif page == "🏫 District Comparison":
             with st.spinner("Fetching Reddit posts and analyzing sentiment..."):
                 try:
                     # Fetch posts for each district
-                    df1 = reddit_utils.fetch_reddit_posts(district1, selected_terms, limit=50)
-                    df2 = reddit_utils.fetch_reddit_posts(district2, selected_terms, limit=50)
+                    df1 = reddit_utils.fetch_reddit_posts(
+                        district1, selected_terms, limit=50
+                    )
+                    df2 = reddit_utils.fetch_reddit_posts(
+                        district2, selected_terms, limit=50
+                    )
 
                     if df1.empty or df2.empty:
-                        st.warning("⚠️ One or both districts returned no Reddit results.")
+                        st.warning(
+                            "⚠️ One or both districts returned no Reddit results."
+                        )
                     else:
                         # Add district labels
                         df1["district"] = district1
@@ -215,9 +263,15 @@ elif page == "🏫 District Comparison":
                         # Display metrics
                         col1, col2 = st.columns(2)
                         with col1:
-                            st.metric(label=f"{district1} - Avg Sentiment", value=round(df1['sentiment_score'].mean(), 2))
+                            st.metric(
+                                label=f"{district1} - Avg Sentiment",
+                                value=round(df1["sentiment_score"].mean(), 2),
+                            )
                         with col2:
-                            st.metric(label=f"{district2} - Avg Sentiment", value=round(df2['sentiment_score'].mean(), 2))
+                            st.metric(
+                                label=f"{district2} - Avg Sentiment",
+                                value=round(df2["sentiment_score"].mean(), 2),
+                            )
 
                         # 🎨 Color-coded sentiment labels
                         def color_sentiment(val):
@@ -230,14 +284,26 @@ elif page == "🏫 District Comparison":
                             return f"background-color: {color}"
 
                         st.subheader(f"📘 {district1} Reddit Posts")
-                        st.dataframe(df1[["title", "score", "sentiment_label"]].style.applymap(color_sentiment, subset=["sentiment_label"]))
+                        st.dataframe(
+                            df1[["title", "score", "sentiment_label"]].style.applymap(
+                                color_sentiment, subset=["sentiment_label"]
+                            )
+                        )
 
                         st.subheader(f"📗 {district2} Reddit Posts")
-                        st.dataframe(df2[["title", "score", "sentiment_label"]].style.applymap(color_sentiment, subset=["sentiment_label"]))
+                        st.dataframe(
+                            df2[["title", "score", "sentiment_label"]].style.applymap(
+                                color_sentiment, subset=["sentiment_label"]
+                            )
+                        )
 
                         # 📊 Sentiment Distribution Chart
                         st.subheader("📊 Sentiment Distribution by District")
-                        sentiment_counts = combined_df.groupby(["district", "sentiment_label"]).size().unstack(fill_value=0)
+                        sentiment_counts = (
+                            combined_df.groupby(["district", "sentiment_label"])
+                            .size()
+                            .unstack(fill_value=0)
+                        )
                         st.bar_chart(sentiment_counts)
 
                         # ☁️ Word Clouds
@@ -248,7 +314,12 @@ elif page == "🏫 District Comparison":
                             st.markdown(f"### {district1}")
                             text1 = " ".join(df1["title"])
                             if text1.strip():
-                                wc1 = WordCloud(width=500, height=300, background_color="black", colormap="cool").generate(text1)
+                                wc1 = WordCloud(
+                                    width=500,
+                                    height=300,
+                                    background_color="black",
+                                    colormap="cool",
+                                ).generate(text1)
                                 st.image(wc1.to_array(), use_container_width=True)
                             else:
                                 st.write("No text available.")
@@ -257,7 +328,12 @@ elif page == "🏫 District Comparison":
                             st.markdown(f"### {district2}")
                             text2 = " ".join(df2["title"])
                             if text2.strip():
-                                wc2 = WordCloud(width=500, height=300, background_color="black", colormap="plasma").generate(text2)
+                                wc2 = WordCloud(
+                                    width=500,
+                                    height=300,
+                                    background_color="black",
+                                    colormap="plasma",
+                                ).generate(text2)
                                 st.image(wc2.to_array(), use_container_width=True)
                             else:
                                 st.write("No text available.")
@@ -266,13 +342,25 @@ elif page == "🏫 District Comparison":
                         st.subheader("📋 Sentiment Summary Table")
                         summary_data = []
                         for df, name in [(df1, district1), (df2, district2)]:
-                            summary_data.append({
-                                "District": name,
-                                "# Posts": len(df),
-                                "Avg Sentiment": round(df["sentiment_score"].mean(), 2),
-                                "% Positive": round((df["sentiment_label"] == "Positive").mean() * 100, 1),
-                                "% Negative": round((df["sentiment_label"] == "Negative").mean() * 100, 1),
-                            })
+                            summary_data.append(
+                                {
+                                    "District": name,
+                                    "# Posts": len(df),
+                                    "Avg Sentiment": round(
+                                        df["sentiment_score"].mean(), 2
+                                    ),
+                                    "% Positive": round(
+                                        (df["sentiment_label"] == "Positive").mean()
+                                        * 100,
+                                        1,
+                                    ),
+                                    "% Negative": round(
+                                        (df["sentiment_label"] == "Negative").mean()
+                                        * 100,
+                                        1,
+                                    ),
+                                }
+                            )
                         summary_df = pd.DataFrame(summary_data)
                         st.table(summary_df)
 
@@ -282,13 +370,21 @@ elif page == "🏫 District Comparison":
                         avg2 = df2["sentiment_score"].mean()
 
                         if avg1 > avg2:
-                            st.markdown(f"✨ **{district1}** discussions appear slightly more positive overall compared to **{district2}**.")
+                            st.markdown(
+                                f"✨ **{district1}** discussions appear slightly more positive overall compared to **{district2}**."
+                            )
                         elif avg2 > avg1:
-                            st.markdown(f"✨ **{district2}** discussions appear slightly more positive overall compared to **{district1}**.")
+                            st.markdown(
+                                f"✨ **{district2}** discussions appear slightly more positive overall compared to **{district1}**."
+                            )
                         else:
-                            st.markdown("😐 Both districts show a similar overall sentiment tone.")
+                            st.markdown(
+                                "😐 Both districts show a similar overall sentiment tone."
+                            )
 
-                        st.markdown("_These insights reflect the tone of recent Reddit discussions related to school topics._")
+                        st.markdown(
+                            "_These insights reflect the tone of recent Reddit discussions related to school topics._"
+                        )
 
                 except Exception as e:
                     st.error(f"⚠️ Error fetching Reddit posts: {e}")
@@ -298,7 +394,8 @@ elif page == "🏫 District Comparison":
 # -----------------------------
 elif page == "ℹ️ About":
     st.title("About This Project")
-    st.write("""
+    st.write(
+        """
     **ADS-509 Final Project**  
     - Dataset: School Reviews (Reddit)  
     - Focus: Comparing high-performing Palo Alto schools with low-performing Oklahoma City schools  
@@ -309,13 +406,5 @@ elif page == "ℹ️ About":
     - Tanya Ortega  
     - Jun Clemente  
     - Amayrani Balbuena
-    """)
-
-
-
-
-    """)
-
-
-
-
+    """
+    )
