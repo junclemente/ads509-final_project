@@ -9,6 +9,11 @@
 A working demonstration of this project can be found at **[TJAlytix.streamlit.app](https://tjalytix.streamlit.app)** _(tee-jah-lyticks)_.
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-informational)](https://tjalytix.streamlit.app)
 
+## 🚀 Live Demo
+
+A working demonstration of this project can be found at **[TJAlytix.streamlit.app](https://tjalytix.streamlit.app)** _(tee-jah-lyticks)_.
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-informational)](https://tjalytix.streamlit.app)
+
 # 💻 Installation
 
 To get started with this project, please clone the repository and navigate
